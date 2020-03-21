@@ -1,19 +1,22 @@
 package microservices.raul.multiplication.domain;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
-@Data
-public class Multiplication {
-    private int factorA;
-    private int factorB;
-    private int result;
+/**
+ * This represents a Multiplication (a * b).
+ */
+@RequiredArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 
-    @Builder
-    public Multiplication(int factorA, int factorB){
-        this.factorA= factorA;
-        this.factorB= factorB;
-        this.result= factorA*factorB;
+public final class Multiplication {
+    // Both factors
+    private final int factorA;
+    private final int factorB;
+    // Empty constructor for JSON (de)serialization
+    Multiplication() {
+        this(0, 0);
     }
 }
 
