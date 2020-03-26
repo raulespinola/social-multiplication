@@ -7,10 +7,9 @@ import microservices.raul.multiplication.domain.MultiplicationResultAttempt;
 import microservices.raul.multiplication.services.MultiplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/results")
@@ -22,15 +21,6 @@ final class MultiplicationResultAttemptController {
                                            MultiplicationService multiplicationService) {
         this.multiplicationService = multiplicationService;
     }
-
-    // Here we'll implement our POST later
-    @RequiredArgsConstructor
-    @NoArgsConstructor(force = true)
-    @Getter
-    static final class ResultResponse {
-        private final boolean correct;
-    }
-
 
     @PostMapping
     ResponseEntity<MultiplicationResultAttempt> postResult(@RequestBody MultiplicationResultAttempt
@@ -45,4 +35,10 @@ final class MultiplicationResultAttemptController {
         return ResponseEntity.ok(attemptCopy);
     }
 
+    @GetMapping
+    ResponseEntity<List<MultiplicationResultAttempt>> getStatistics(@RequestParam("alias") String alias) {
+        return ResponseEntity.ok(
+                multiplicationService.getStatsForUser(alias)
+        );
+    }
 }
