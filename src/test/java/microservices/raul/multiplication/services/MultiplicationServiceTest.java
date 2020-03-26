@@ -1,6 +1,8 @@
 package microservices.raul.multiplication.services;
 
 import microservices.raul.multiplication.domain.Multiplication;
+import microservices.raul.multiplication.repositories.MultiplicationResultAttemptRepository;
+import microservices.raul.multiplication.repositories.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,8 +18,13 @@ import static org.mockito.BDDMockito.given;
 
 public class MultiplicationServiceTest {
 
-
     private MultiplicationServiceImpl multiplicationServiceImpl;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private MultiplicationResultAttemptRepository attemptRepository;
 
     @Mock
     private RandomGeneratorService randomGeneratorService;
@@ -27,7 +34,10 @@ public class MultiplicationServiceTest {
         // With this call to initMocks we tell Mockito to
         //process the annotations
         MockitoAnnotations.initMocks(this);
-        multiplicationServiceImpl = new MultiplicationServiceImpl(randomGeneratorService);
+        multiplicationServiceImpl = new MultiplicationServiceImpl(
+                randomGeneratorService,
+                attemptRepository,
+                userRepository);
     }
 
     @Test

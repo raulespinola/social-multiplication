@@ -3,6 +3,8 @@ package microservices.raul.multiplication.services;
 import microservices.raul.multiplication.domain.Multiplication;
 import microservices.raul.multiplication.domain.MultiplicationResultAttempt;
 
+import java.util.List;
+
 public interface MultiplicationService {
     /**
      * Generates a random {@link Multiplication} object.
@@ -18,4 +20,6 @@ public interface MultiplicationService {
      */
     boolean checkAttempt(final MultiplicationResultAttempt
                                   resultAttempt);
+
+    List<MultiplicationResultAttempt> getStatsForUser(String userAlias);
 }
