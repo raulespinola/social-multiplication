@@ -3,6 +3,8 @@ package microservices.raul.multiplication.services;
 import microservices.raul.multiplication.domain.Multiplication;
 import microservices.raul.multiplication.domain.MultiplicationResultAttempt;
 import microservices.raul.multiplication.domain.User;
+import microservices.raul.multiplication.event.EventDispatcher;
+import microservices.raul.multiplication.event.MultiplicationSolvedEvent;
 import microservices.raul.multiplication.repositories.MultiplicationResultAttemptRepository;
 import microservices.raul.multiplication.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,23 +16,24 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class  MultiplicationServiceImpl implements MultiplicationService {
+class  MultiplicationServiceImpl implements MultiplicationService {
 
     private RandomGeneratorService randomGeneratorService;
     private MultiplicationResultAttemptRepository
             attemptRepository;
     private UserRepository userRepository;
-
+    private EventDispatcher eventDispatcher;
 
     @Autowired
     public MultiplicationServiceImpl(
-            RandomGeneratorService randomGeneratorService,
-            MultiplicationResultAttemptRepository attemptRepository,
-            UserRepository userRepository
-            ){
+            final RandomGeneratorService randomGeneratorService,
+            final MultiplicationResultAttemptRepository attemptRepository,
+            final UserRepository userRepository,
+            final EventDispatcher eventDispatcher) {
         this.randomGeneratorService = randomGeneratorService;
         this.attemptRepository = attemptRepository;
         this.userRepository = userRepository;
+        this.eventDispatcher = eventDispatcher;
     }
 
     @Override
@@ -39,6 +42,7 @@ public class  MultiplicationServiceImpl implements MultiplicationService {
         int factorB = randomGeneratorService.generateRandomFactor();
         return new Multiplication(factorA,factorB);
     }
+
 
     @Transactional
     @Override
@@ -63,6 +67,15 @@ public class  MultiplicationServiceImpl implements MultiplicationService {
         );
         // Stores the attempt
         attemptRepository.save(checkedAttempt);
+
+        // Communicates the result via Event
+        eventDispatcher.send(
+                new MultiplicationSolvedEvent(checkedAttempt.
+                getId(),
+                checkedAttempt.getUser().getId(),
+                checkedAttempt.isCorrect())
+        );
+
         return isCorrect;
 
     }

@@ -1,6 +1,7 @@
 package microservices.raul.multiplication.services;
 
 import microservices.raul.multiplication.domain.Multiplication;
+import microservices.raul.multiplication.event.EventDispatcher;
 import microservices.raul.multiplication.repositories.MultiplicationResultAttemptRepository;
 import microservices.raul.multiplication.repositories.UserRepository;
 import org.junit.Before;
@@ -29,6 +30,9 @@ public class MultiplicationServiceTest {
     @Mock
     private RandomGeneratorService randomGeneratorService;
 
+    @Mock
+    private EventDispatcher eventDispatcher;
+
     @Before
     public void setUp(){
         // With this call to initMocks we tell Mockito to
@@ -37,7 +41,8 @@ public class MultiplicationServiceTest {
         multiplicationServiceImpl = new MultiplicationServiceImpl(
                 randomGeneratorService,
                 attemptRepository,
-                userRepository);
+                userRepository,
+                eventDispatcher);
     }
 
     @Test
